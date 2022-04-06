@@ -14,7 +14,7 @@ twr_button_t button_left;
 twr_button_t button_right;
 
 // Initial state for the tester function
-test_state state = TEST_EXPANDER;
+//test_state state = TEST_EXPANDER;
 
 twr_scheduler_task_id_t lcd_print_task;
 twr_scheduler_task_id_t tester_task;
@@ -213,7 +213,7 @@ void application_init(void)
     twr_led_init(&led, TWR_GPIO_LED, false, 0);
     twr_led_pulse(&led, 2000);
 
-    const twr_button_driver_t* lcdButtonDriver =  twr_module_lcd_get_button_driver();
+    /*const twr_button_driver_t* lcdButtonDriver =  twr_module_lcd_get_button_driver();
     twr_button_init_virtual(&button_left, 0, lcdButtonDriver, 0);
     twr_button_init_virtual(&button_right, 1, lcdButtonDriver, 0);
     twr_button_set_event_handler(&button_left, button_event_handler, (int*)0);
@@ -222,7 +222,7 @@ void application_init(void)
     const twr_led_driver_t* driver = twr_module_lcd_get_led_driver();
     twr_led_init_virtual(&lcdLedRed, TWR_MODULE_LCD_LED_RED, driver, 1);
     twr_led_init_virtual(&lcdLedGreen, TWR_MODULE_LCD_LED_GREEN, driver, 1);
-    twr_led_init_virtual(&lcdLedBlue, TWR_MODULE_LCD_LED_BLUE, driver, 1);
+    twr_led_init_virtual(&lcdLedBlue, TWR_MODULE_LCD_LED_BLUE, driver, 1);*/
 
     twr_button_set_hold_time(&button_left, 300);
     twr_button_set_hold_time(&button_right, 300);

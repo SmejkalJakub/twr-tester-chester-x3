@@ -4,8 +4,10 @@
 #include <twr_i2c.h>
 #include <twr_scheduler.h>
 
-#define TWR_ADS122C04_ADDRESS_A     0x40
-#define TWR_ADS122C04_ADDRESS_B     0x41
+#include <twr_log.h>
+
+#define TWR_ADS122C04_ADDRESS_A     0x46
+#define TWR_ADS122C04_ADDRESS_B     0x47
 
 typedef struct
 {

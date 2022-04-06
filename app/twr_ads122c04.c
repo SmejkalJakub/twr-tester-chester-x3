@@ -141,6 +141,10 @@ bool twr_ads122c04_read(twr_ads122c04_t *ctx, float *temperature)
 
     twr_ads122c04_data_read(ctx, &data);
 
+    twr_log_debug("CR2: %d", cr2);
+    twr_log_debug("DATA: %ld", data);
+
+
     float r_ref = 1500.0f;
     float gain = 1.0f;
     float r = r_ref * (data / (gain * (1 << 23)));
