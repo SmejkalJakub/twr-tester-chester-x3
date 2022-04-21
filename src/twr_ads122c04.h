@@ -22,9 +22,9 @@ bool twr_ads122c04_start_sync(twr_ads122c04_t *ctx);
 bool twr_ads122c04_powerdown(twr_ads122c04_t *ctx);
 bool twr_ads122c04_register_read(twr_ads122c04_t *ctx, uint8_t address, uint8_t *data);
 bool twr_ads122c04_register_write(twr_ads122c04_t *ctx, uint8_t address, uint8_t data);
-bool twr_ads122c04_data_read(twr_ads122c04_t *ctx, uint32_t *data);
+bool twr_ads122c04_data_read(twr_ads122c04_t *ctx, int32_t *data);
 bool twr_ads122c04_data_read_int32(twr_ads122c04_t *ctx, int32_t *data);
 bool twr_ads122c04_measure(twr_ads122c04_t *ctx);
-bool twr_ads122c04_read(twr_ads122c04_t *ctx, float *temperature);
+bool twr_ads122c04_read(twr_ads122c04_t *ctx, int32_t *value);
 
 #endif

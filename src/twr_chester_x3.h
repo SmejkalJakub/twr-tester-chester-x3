@@ -43,8 +43,8 @@ struct twr_chester_x3_t
     twr_ads122c04_t ads122c04_2;
     bool ads122c04_1_is_present;
     bool ads122c04_2_is_present;
-    float ads122c04_1_temperature;
-    float ads122c04_2_temperature;
+    float ads122c04_1_value;
+    float ads122c04_2_value;
     twr_scheduler_task_id_t _task_id_interval;
     twr_scheduler_task_id_t _task_id_measure;
 };
@@ -53,7 +53,7 @@ void twr_chester_x3_init(twr_chester_x3_t *self, twr_i2c_channel_t i2c_channel, 
 void twr_chester_x3_set_update_interval(twr_chester_x3_t *self, twr_tick_t interval);
 void twr_chester_x3_set_event_handler(twr_chester_x3_t *self, void (*event_handler)(twr_chester_x3_t *, twr_chester_x3_event_t, void *), void *event_param);
 bool twr_chester_x3_measure(twr_chester_x3_t *self);
-void twr_chester_x3_get_temperature_1(twr_chester_x3_t *self, float *temperature);
-void twr_chester_x3_get_temperature_2(twr_chester_x3_t *self, float *temperature);
+void twr_chester_x3_get_value_1(twr_chester_x3_t *self, int32_t *value);
+void twr_chester_x3_get_value_2(twr_chester_x3_t *self, int32_t *value);
 
 #endif

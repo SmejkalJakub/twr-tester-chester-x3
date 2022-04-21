@@ -15,7 +15,9 @@ typedef enum
     TEST_I2C_0 = 0,
     TEST_I2C_1 = 1,
     TEST_DRDY_0 = 2,
-    TEST_DRDY_1 = 3
+    TEST_DRDY_1 = 3,
+    TEST_SCALE_1 = 4,
+    TEST_SCALE_2 = 5 
 
 } test_state;
 

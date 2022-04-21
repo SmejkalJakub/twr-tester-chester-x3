@@ -48,27 +48,27 @@ static void _twr_chester_x3_task_interval(void *param)
     twr_scheduler_plan_current_relative(self->_update_interval);
 }
 
-void twr_chester_x3_get_temperature_1(twr_chester_x3_t *self, float *temperature)
+void twr_chester_x3_get_value_1(twr_chester_x3_t *self, int32_t *value)
 {
     if (self->ads122c04_1_is_present)
     {
-        *temperature = self->ads122c04_1_temperature;
+        *value = self->ads122c04_1_value;
     }
     else
     {
-        temperature = NULL;
+        value = NULL;
     }
 }
 
-void twr_chester_x3_get_temperature_2(twr_chester_x3_t *self, float *temperature)
+void twr_chester_x3_get_value_2(twr_chester_x3_t *self, int32_t *value)
 {
     if (self->ads122c04_2_is_present)
     {
-        *temperature = self->ads122c04_2_temperature;
+        *value = self->ads122c04_2_value;
     }
     else
     {
-        temperature = NULL;
+        value = NULL;
     }
 }
 
@@ -168,19 +168,19 @@ start:
         {
             self->_state = TWR_CHESTER_X3_STATE_ERROR;
 
-            float temperature_1;
-            float temperature_2;
+            int32_t value_1;
+            int32_t value_2;
 
             bool read_state_1 = true;
             bool read_state_2 = false;
 
             if (self->ads122c04_1_is_present)
             {
-                read_state_1 = twr_ads122c04_read(&self->ads122c04_1, &temperature_1);
+                read_state_1 = twr_ads122c04_read(&self->ads122c04_1, &value_1);
             }
             if (self->ads122c04_2_is_present)
             {
-                read_state_2 = twr_ads122c04_read(&self->ads122c04_2, &temperature_2);
+                read_state_2 = twr_ads122c04_read(&self->ads122c04_2, &value_2);
             }
 
             if (!read_state_1 && !read_state_2)
@@ -190,11 +190,11 @@ start:
 
             if (self->ads122c04_1_is_present && read_state_1)
             {
-                self->ads122c04_1_temperature = temperature_1;
+                self->ads122c04_1_value = value_1;
             }
             if (self->ads122c04_2_is_present && read_state_2)
             {
-                self->ads122c04_2_temperature = temperature_2;
+                self->ads122c04_2_value = value_2;
             }
 
             self->_state = TWR_CHESTER_X3_STATE_UPDATE;
