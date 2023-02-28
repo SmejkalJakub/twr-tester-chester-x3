@@ -7,8 +7,8 @@
 // LED instance
 twr_led_t led;
 
-twr_scheduler_task_id_t lcd_print_task;
-twr_scheduler_task_id_t tester_task;
+twr_scheduler_task_id_t lcd_print_task_x3c;
+twr_scheduler_task_id_t tester_task_x3c;
 
 test_state state = TEST_I2C_0;
 
@@ -27,8 +27,8 @@ twr_chester_x3_t x3;
 // Initial state for the tester function
 //test_state state = TEST_EXPANDER;
 
-twr_scheduler_task_id_t lcd_print_task;
-twr_scheduler_task_id_t tester_task;
+twr_scheduler_task_id_t lcd_print_task_x3a;
+twr_scheduler_task_id_t tester_task_x3a;
 
 twr_led_t lcdLedRed;
 twr_led_t lcdLedGreen;
@@ -37,11 +37,14 @@ twr_led_t lcdLedBlue;
 // Results of each test
 bool test_results[6];
 
-void tester();
-void lcd_print_results();
+void tester_x3c();
+void lcd_print_results_x3c();
+
+void tester_x3a();
+void lcd_print_results_x3a();
 
 // Task to print the results onto LCD
-void lcd_print_results()
+void lcd_print_results_x3c()
 {
     if(!twr_module_lcd_is_ready())
     {
@@ -63,7 +66,7 @@ void lcd_print_results()
         twr_module_lcd_draw_string(15, 43, "Insert chester X3", 1);
         twr_module_lcd_draw_string(40, 58, "and hold", 1);
         twr_module_lcd_draw_string(8, 73, "right button for X3A", 1);
-        //twr_module_lcd_draw_string(12, 88, "left button for X0B", 1);
+        twr_module_lcd_draw_string(12, 88, "left button for X3C", 1);
 
     }
 
@@ -139,7 +142,132 @@ void lcd_print_results()
         }
 
         int numberOfErrors = 0;
-        for(int i = 0; i < 2; i++)
+        for(int i = 0; i < 6; i++)
+        {
+            if(!test_results[i])
+            {
+                numberOfErrors++;
+            }
+        }
+
+        twr_led_set_mode(&lcdLedBlue, TWR_LED_MODE_OFF);
+
+        if(numberOfErrors == 0)
+        {
+            twr_led_set_mode(&lcdLedGreen, TWR_LED_MODE_ON);
+        }
+        else
+        {
+            twr_led_set_mode(&lcdLedRed, TWR_LED_MODE_ON);
+        }
+    }
+
+    twr_module_lcd_update();
+
+    twr_system_pll_disable();
+
+    twr_scheduler_plan_current_relative(200);
+}
+
+void lcd_print_results_x3a()
+{
+    if(!twr_module_lcd_is_ready())
+    {
+        twr_scheduler_plan_current_relative(20);
+        return;
+    }
+
+    twr_system_pll_enable();
+
+    twr_module_lcd_clear();
+
+    twr_module_lcd_set_font(&twr_font_ubuntu_15);
+    twr_module_lcd_draw_string(0, 5, "CHESTER TESTER X3", 1);
+    twr_module_lcd_draw_string(0, 15, "--------------------------", 1);
+
+    if(test_progress == 0)
+    {
+        twr_module_lcd_set_font(&twr_font_ubuntu_13);
+        twr_module_lcd_draw_string(15, 43, "Insert chester X3", 1);
+        twr_module_lcd_draw_string(40, 58, "and hold", 1);
+        twr_module_lcd_draw_string(8, 73, "right button for X3A", 1);
+        twr_module_lcd_draw_string(12, 88, "left button for X3C", 1);
+
+    }
+
+    twr_module_lcd_set_font(&twr_font_ubuntu_13);
+
+    if(test_progress > 0)
+    {
+        if(test_results[0])
+        {
+            twr_module_lcd_draw_string(0, 25, "I2C test 0: OK", 1);
+        }
+        else
+        {
+            twr_module_lcd_draw_string(3, 25, "I2C test 0: FAILED", 1);
+        }
+    }
+
+    if(test_progress > 1)
+    {
+        if(test_results[1])
+        {
+            twr_module_lcd_draw_string(0, 35, "I2C test 1: OK", 1);
+        }
+        else
+        {
+            twr_module_lcd_draw_string(0, 35, "I2C test 1: FAILED", 1);
+        }
+    }
+
+    if(test_progress > 2)
+    {
+        if(test_results[2])
+        {
+            twr_module_lcd_draw_string(0, 45, "DRDY 0 test: OK", 1);
+        }
+        else
+        {
+            twr_module_lcd_draw_string(0, 45, "DRDY 0 test: FAILED", 1);
+        }
+    }
+
+    if(test_progress > 3)
+    {
+        if(test_results[3])
+        {
+            twr_module_lcd_draw_string(0, 55, "DRDY 1 test: OK", 1);
+        }
+        else
+        {
+            twr_module_lcd_draw_string(0, 55, "DRDY 1 test: FAILED", 1);
+        }
+    }
+    if(test_progress > 4)
+    {
+        if(test_results[4])
+        {
+            twr_module_lcd_draw_string(0, 65, "PT1000 test 1: OK", 1);
+        }
+        else
+        {
+            twr_module_lcd_draw_string(0, 65, "PT1000 test 1: FAILED", 1);
+        }
+    }
+    if(test_progress > 5)
+    {
+        if(test_results[5])
+        {
+            twr_module_lcd_draw_string(0, 75, "PT1000 test 2: OK", 1);
+        }
+        else
+        {
+            twr_module_lcd_draw_string(0, 75, "PT1000 test 2: FAILED", 1);
+        }
+
+        int numberOfErrors = 0;
+        for(int i = 0; i < 6; i++)
         {
             if(!test_results[i])
             {
@@ -177,7 +305,10 @@ void button_event_handler(twr_button_t *self, twr_button_event_t event, void *ev
         twr_ads122c04_reset(&x3.ads122c04_2);
 
         twr_led_set_mode(&lcdLedBlue, TWR_LED_MODE_ON);
-        twr_scheduler_plan_now(tester_task);
+        twr_scheduler_plan_now(tester_task_x3a);
+        twr_scheduler_unregister(lcd_print_task_x3c);
+        lcd_print_task_x3a = twr_scheduler_register(lcd_print_results_x3a, NULL, 1000);
+
         twr_module_lcd_clear();
         twr_module_lcd_update();
     }
@@ -192,7 +323,41 @@ void button_event_handler(twr_button_t *self, twr_button_event_t event, void *ev
 
         test_progress = 0;
         state = TEST_I2C_0;
-        twr_scheduler_plan_now(tester_task);
+        twr_scheduler_plan_now(tester_task_x3a);
+        twr_scheduler_unregister(lcd_print_task_x3c);
+        lcd_print_task_x3a = twr_scheduler_register(lcd_print_results_x3a, NULL, 1000);
+
+        twr_module_lcd_clear();
+        twr_module_lcd_update();
+    }
+
+    if(self == &button_left && event == TWR_BUTTON_EVENT_HOLD && test_progress == 0)
+    {
+        twr_ads122c04_reset(&x3.ads122c04_1);
+        twr_ads122c04_reset(&x3.ads122c04_2);
+
+        twr_led_set_mode(&lcdLedBlue, TWR_LED_MODE_ON);
+        twr_scheduler_plan_now(tester_task_x3c);
+        twr_scheduler_unregister(lcd_print_task_x3a);
+        lcd_print_task_x3c = twr_scheduler_register(lcd_print_results_x3c, NULL, 1000);
+
+        twr_module_lcd_clear();
+        twr_module_lcd_update();
+    }
+    else if(self == &button_left && event == TWR_BUTTON_EVENT_HOLD && test_progress > 5)
+    {
+        twr_ads122c04_reset(&x3.ads122c04_1);
+        twr_ads122c04_reset(&x3.ads122c04_2);
+
+        twr_led_set_mode(&lcdLedRed, TWR_LED_MODE_OFF);
+        twr_led_set_mode(&lcdLedGreen, TWR_LED_MODE_OFF);
+        twr_led_set_mode(&lcdLedBlue, TWR_LED_MODE_ON);
+
+        test_progress = 0;
+        state = TEST_I2C_0;
+        twr_scheduler_plan_now(tester_task_x3c);
+        twr_scheduler_unregister(lcd_print_task_x3a);
+        lcd_print_task_x3c = twr_scheduler_register(lcd_print_results_x3c, NULL, 1000);
 
         twr_module_lcd_clear();
         twr_module_lcd_update();
@@ -206,7 +371,7 @@ void delay()
 }
 
 // State machine of the whole tester
-void tester()
+void tester_x3c()
 {
     start:
     switch(state)
@@ -395,14 +560,14 @@ void tester()
         }
         case TEST_SCALE_1:
         {
-            bool meassure = twr_ads122c04_measure(&x3.ads122c04_1);
+            bool meassure = twr_ads122c04_measure_x3c(&x3.ads122c04_1);
             twr_delay_us(60000);
 
             if(meassure)
             {
                 int32_t value_1;
 
-                bool read_state = twr_ads122c04_read(&x3.ads122c04_1, &value_1);
+                bool read_state = twr_ads122c04_read_x3c(&x3.ads122c04_1, &value_1);
                 twr_delay_us(60000);
 
                 if(read_state)
@@ -453,14 +618,14 @@ void tester()
         }
         case TEST_SCALE_2:
         {
-            bool meassure = twr_ads122c04_measure(&x3.ads122c04_2);
+            bool meassure = twr_ads122c04_measure_x3c(&x3.ads122c04_2);
             twr_delay_us(60000);
 
             if(meassure)
             {
                 int32_t value_2;
 
-                bool read_state = twr_ads122c04_read(&x3.ads122c04_2, &value_2);
+                bool read_state = twr_ads122c04_read_x3c(&x3.ads122c04_2, &value_2);
                 twr_delay_us(60000);
 
                 if(read_state)
@@ -503,6 +668,316 @@ void tester()
             }
             break;
         }
+        case TEST_TEMPERATURE_1:
+            return;
+        case TEST_TEMPERATURE_2:
+            return;
+
+        default:
+            return;
+    }
+}
+
+// State machine of the whole tester
+void tester_x3a()
+{
+    start:
+    switch(state)
+    {
+        // Simple test if the expander is communicatig well
+        case TEST_I2C_0:
+            twr_chester_x3_init(&x3, TWR_I2C_I2C0, twr_chester_x3_I2C_ADDRESS);
+            twr_delay_us(60000);
+
+            if(!twr_ads122c04_init(&x3.ads122c04_1, x3._i2c_channel, TWR_ADS122C04_ADDRESS_A))
+            {
+                test_results[test_progress] = false;
+
+                state = TEST_I2C_1;
+                test_progress++;
+                twr_delay_us(60000);
+                goto start;
+            }
+            else
+            {
+                test_results[test_progress] = true;
+
+                state = TEST_I2C_1;
+                test_progress++;
+                twr_delay_us(60000);
+                goto start;
+            }
+            break;
+        case TEST_I2C_1:
+            if(!twr_ads122c04_init(&x3.ads122c04_2, x3._i2c_channel, TWR_ADS122C04_ADDRESS_B))
+            {
+                test_results[test_progress] = false;
+
+                state = TEST_DRDY_0;
+                test_progress++;
+                twr_delay_us(60000);
+                goto start;
+            }
+            else
+            {
+                test_results[test_progress] = true;
+
+                state = TEST_DRDY_0;
+                test_progress++;
+                twr_delay_us(60000);
+                goto start;
+            }
+            break;
+
+        case TEST_DRDY_0:
+        {
+            uint8_t rdry = 42;
+
+            uint8_t cr2;
+            if(!twr_ads122c04_register_read(&x3.ads122c04_1, 0x02, &cr2))
+            {
+                test_results[test_progress] = false;
+
+                state = TEST_DRDY_1;
+                test_progress++;
+                twr_delay_us(60000);
+
+                goto start;
+            }
+
+            rdry = (cr2 & 0x80) >> 7;
+            twr_log_debug("READY : %d", rdry);
+
+            if(rdry == 0)
+            {
+                twr_ads122c04_start_sync(&x3.ads122c04_1);
+                for(int i = 0; i < 50; i++)
+                {
+                    uint8_t cr2;
+                    twr_ads122c04_register_read(&x3.ads122c04_1, 0x02, &cr2);
+
+                    rdry = (cr2 & 0x80) >> 7;
+
+                    twr_log_debug("READY: %d", (cr2 & 0x80) >> 7);
+                    if(rdry == 1)
+                    {
+                        break;
+                    }
+                    twr_delay_us(60000);
+                }
+                if(rdry == 1)
+                {
+                    test_results[test_progress] = true;
+
+                    state = TEST_DRDY_1;
+                    test_progress++;
+                    twr_delay_us(60000);
+
+                    goto start;
+                }
+                else
+                {
+                    test_results[test_progress] = false;
+
+                    state = TEST_DRDY_1;
+                    test_progress++;
+                    twr_delay_us(60000);
+
+                    goto start;
+                }
+            }
+            else
+            {
+                test_results[test_progress] = false;
+
+                state = TEST_DRDY_1;
+                test_progress++;
+                twr_delay_us(60000);
+
+                goto start;
+            }
+
+            break;
+        }
+
+        case TEST_DRDY_1:
+        {
+            uint8_t rdry = 42;
+
+            uint8_t cr2;
+            if(!twr_ads122c04_register_read(&x3.ads122c04_2, 0x02, &cr2))
+            {
+                test_results[test_progress] = false;
+
+                state = TEST_TEMPERATURE_1;
+                test_progress++;
+                twr_delay_us(60000);
+                goto start;
+            }
+
+            rdry = (cr2 & 0x80) >> 7;
+            twr_log_debug("READY 2: %d", rdry);
+
+            if(rdry == 0)
+            {
+                twr_ads122c04_start_sync(&x3.ads122c04_2);
+                for(int i = 0; i < 50; i++)
+                {
+                    uint8_t cr2;
+                    twr_ads122c04_register_read(&x3.ads122c04_2, 0x02, &cr2);
+
+                    rdry = (cr2 & 0x80) >> 7;
+
+                    twr_log_debug("READY 2: %d", (cr2 & 0x80) >> 7);
+                    if(rdry == 1)
+                    {
+                        break;
+                    }
+                    twr_delay_us(60000);
+                }
+                if(rdry == 1)
+                {
+                    test_results[test_progress] = true;
+
+                    state = TEST_TEMPERATURE_1;
+                    test_progress++;
+                    twr_delay_us(60000);
+                    goto start;
+
+                }
+                else
+                {
+                    test_results[test_progress] = false;
+
+                    state = TEST_TEMPERATURE_1;
+                    test_progress++;
+                    twr_delay_us(60000);
+                    goto start;
+                }
+            }
+            else
+            {
+                test_results[test_progress] = false;
+
+                state = TEST_TEMPERATURE_1;
+                test_progress++;
+                twr_delay_us(60000);
+                goto start;
+            }
+            break;
+        }
+        case TEST_TEMPERATURE_1:
+        {
+            bool meassure = twr_ads122c04_measure_x3a(&x3.ads122c04_1);
+            twr_delay_us(60000);
+
+            if(meassure)
+            {
+                float value_1;
+
+                bool read_state = twr_ads122c04_read_x3a(&x3.ads122c04_1, &value_1);
+                twr_delay_us(60000);
+
+                if(read_state)
+                {
+                    twr_log_debug("VALUE 1: %.2f", value_1);
+
+                    if(value_1 >= 15 && value_1 <= 30)
+                    {
+                        test_results[test_progress] = true;
+
+                        state = TEST_TEMPERATURE_2;
+                        test_progress++;
+                        twr_delay_us(60000);
+                        goto start;
+                    }
+                    else
+                    {
+                        test_results[test_progress] = false;
+
+                        state = TEST_TEMPERATURE_2;
+                        test_progress++;
+                        twr_delay_us(60000);
+                        goto start;
+                    }
+
+                }
+                else
+                {
+                    test_results[test_progress] = false;
+
+                    state = TEST_TEMPERATURE_2;
+                    test_progress++;
+                    twr_delay_us(60000);
+                    goto start;
+                }
+            }
+            else
+            {
+                test_results[test_progress] = false;
+
+                state = TEST_TEMPERATURE_2;
+                test_progress++;
+                twr_delay_us(60000);
+                goto start;
+            }
+            break;
+
+        }
+        case TEST_TEMPERATURE_2:
+        {
+            bool meassure = twr_ads122c04_measure_x3a(&x3.ads122c04_2);
+            twr_delay_us(60000);
+
+            if(meassure)
+            {
+                float value_2;
+
+                bool read_state = twr_ads122c04_read_x3a(&x3.ads122c04_2, &value_2);
+                twr_delay_us(60000);
+
+                if(read_state)
+                {
+                    twr_log_debug("VALUE 2: %.2f", value_2);
+
+                    if(value_2 >= 15 && value_2 <= 30)
+                    {
+                        test_results[test_progress] = true;
+
+                        test_progress++;
+                        twr_delay_us(60000);
+                        return;
+                    }
+                    else
+                    {
+                        test_results[test_progress] = false;
+
+                        test_progress++;
+                        twr_delay_us(60000);
+                        return;
+                    }
+                }
+                else
+                {
+                    test_results[test_progress] = false;
+
+                    test_progress++;
+                    twr_delay_us(60000);
+                }
+            }
+            else
+            {
+                test_results[test_progress] = false;
+
+                test_progress++;
+                twr_delay_us(60000);
+            }
+            break;
+        }
+        case TEST_SCALE_1:
+            return;
+        case TEST_SCALE_2:
+            return;
 
         default:
             return;
@@ -552,7 +1027,9 @@ void application_init(void)
     twr_button_set_debounce_time(&button_right, 30);
 
     // Set up all the tasks
-    lcd_print_task = twr_scheduler_register(lcd_print_results, NULL, 1000);
-    tester_task = twr_scheduler_register(tester, NULL, TWR_TICK_INFINITY);
+    lcd_print_task_x3c = twr_scheduler_register(lcd_print_results_x3c, NULL, 1000);
+    tester_task_x3c = twr_scheduler_register(tester_x3c, NULL, TWR_TICK_INFINITY);
 
+    lcd_print_task_x3a = twr_scheduler_register(lcd_print_results_x3a, NULL, TWR_TICK_INFINITY);
+    tester_task_x3a = twr_scheduler_register(tester_x3a, NULL, TWR_TICK_INFINITY);
 }

@@ -2,8 +2,8 @@
 
 #define _twr_chester_x3_DELAY_RUN 100
 
-static void _twr_chester_x3_task_interval(void *param);
-static void _twr_chester_x3_task_measure(void *param);
+/*static void _twr_chester_x3_task_interval(void *param);
+static void _twr_chester_x3_task_measure(void *param);*/
 
 void twr_chester_x3_init(twr_chester_x3_t *self, twr_i2c_channel_t i2c_channel, uint8_t i2c_address)
 {
@@ -11,13 +11,13 @@ void twr_chester_x3_init(twr_chester_x3_t *self, twr_i2c_channel_t i2c_channel, 
     self->_i2c_channel = i2c_channel;
     self->_i2c_address = i2c_address;
 
-    self->_task_id_interval = twr_scheduler_register(_twr_chester_x3_task_interval, self, TWR_TICK_INFINITY);
-    self->_task_id_measure = twr_scheduler_register(_twr_chester_x3_task_measure, self, _twr_chester_x3_DELAY_RUN);
+    /*self->_task_id_interval = twr_scheduler_register(_twr_chester_x3_task_interval, self, TWR_TICK_INFINITY);
+    self->_task_id_measure = twr_scheduler_register(_twr_chester_x3_task_measure, self, _twr_chester_x3_DELAY_RUN);*/
 
     twr_i2c_init(self->_i2c_channel, TWR_I2C_SPEED_400_KHZ);
 }
 
-void twr_chester_x3_set_event_handler(twr_chester_x3_t *self, void (*event_handler)(twr_chester_x3_t *, twr_chester_x3_event_t, void *), void *event_param)
+/*void twr_chester_x3_set_event_handler(twr_chester_x3_t *self, void (*event_handler)(twr_chester_x3_t *, twr_chester_x3_event_t, void *), void *event_param)
 {
     self->_event_handler = event_handler;
     self->_event_param = event_param;
@@ -223,3 +223,4 @@ start:
         }
     }
 }
+*/

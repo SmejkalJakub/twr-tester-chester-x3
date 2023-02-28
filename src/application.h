@@ -17,8 +17,9 @@ typedef enum
     TEST_DRDY_0 = 2,
     TEST_DRDY_1 = 3,
     TEST_SCALE_1 = 4,
-    TEST_SCALE_2 = 5 
-
+    TEST_SCALE_2 = 5,
+    TEST_TEMPERATURE_1 = 6,
+    TEST_TEMPERATURE_2 = 7,
 } test_state;
 
 #endif
