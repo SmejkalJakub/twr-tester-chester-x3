@@ -182,7 +182,7 @@ bool twr_ads122c04_read_x3a(twr_ads122c04_t *ctx, float *value)
 
     twr_ads122c04_data_read(ctx, &data);
 
-    float r_ref = 1500.0f;
+    float r_ref = 1800.0f;
     float gain = 1.0f;
     float r = r_ref * (data / (gain * (1 << 23)));
 
